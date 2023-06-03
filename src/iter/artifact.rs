@@ -65,13 +65,13 @@ pub type EnumerateArtifact<I> = Artifact<
 >;
 
 pub trait ArtifactExt : Iterator {
-	fn artifact<P, A>(self, p: P) -> Artifact<Self, P, A>
+	fn artifact<P, A>(self, pred: P) -> Artifact<Self, P, A>
 	where
 		Self: Sized,
 		P: Fn(&Self::Item) -> A,
 		A: Sized,
 	{
-		Artifact::new(self, p)
+		Artifact::new(self, pred)
 	}
 
 	fn enumerate_artifact(self) -> EnumerateArtifact<Self>
