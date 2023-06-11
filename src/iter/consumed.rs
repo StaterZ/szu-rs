@@ -20,12 +20,11 @@ impl<I: Iterator> Iterator for Consumed<I> {
 	type Item = I::Item;
 
 	fn next(&mut self) -> Option<<Self as Iterator>::Item> {
-		if let Some(item) = self.iter.next() {
+		let result = self.iter.next();
+		if result.is_some() {
 			self.consumed += 1;
-			Some(item)
-		} else {
-			None
 		}
+		result
 	}
 }
 

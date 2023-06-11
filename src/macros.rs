@@ -1,6 +1,13 @@
 #[macro_export]
+macro_rules! replace_macro_arg {
+	($in:tt, $( $out:tt )* ) => {
+		$( $out )*
+	};
+}
+
+#[macro_export]
 macro_rules! tag_enum_helper {
-	($value_name:ident :: $n:ident ( $( $p:tt ),* ) ) => {
+	($value_name:ident :: $n:ident ( $( $p:ty ),* ) ) => {
 		panic!("bad tag conversion")
 	};
 	($value_name:ident :: $n:ident) => {
@@ -15,7 +22,7 @@ macro_rules! tag_enum {
 			$( # $value_meta:tt )? $value_name:ident ,
 			$( # $tag_meta:tt )? $tag_name:ident $(,)?
 		) {
-			$( $n:ident $( ( $( $p:tt ),* ) )? ),+ $(,)?
+			$( $n:ident $( ( $( $p:ty ),* ) )? ),+ $(,)?
 		}
 	) => {
 		$( # $value_meta )?
@@ -28,16 +35,14 @@ macro_rules! tag_enum {
 			$( $n ),+
 		}
 
-		#[allow(unused_variables, non_snake_case)]
 		impl From<$value_name> for $tag_name {
 			fn from(value: $value_name) -> Self {
 				match value {
-					$( $value_name :: $n $( ( $( $p ),* ) )? => $tag_name :: $n ),+
+					$( $value_name :: $n $( ( $( replace_macro_arg!($p, _) ),* ) )? => $tag_name :: $n ),+
 				}
 			}
 		}
 		
-		#[allow(unused_variables, non_snake_case)]
 		impl From<$tag_name> for $value_name {
 			fn from(value: $tag_name) -> Self {
 				match value {
@@ -49,7 +54,7 @@ macro_rules! tag_enum {
 }
 
 #[macro_export]
-macro_rules! t {
+macro_rules! ternary {
 	($cond:expr => $trueExpr:expr, $falseExpr:expr) => {
 		if $cond { $trueExpr } else { $falseExpr }
 	}
