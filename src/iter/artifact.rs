@@ -1,5 +1,3 @@
-use std::iter::Enumerate;
-
 pub struct Artifact<I, P, A>
 where
 	I: Iterator,
@@ -18,8 +16,8 @@ where
 	pub fn new(iter: I, pred: P) -> Self {
 		Self {
 			iter,
-			artifact: None,
 			pred,
+			artifact: None,
 		}
 	}
 
@@ -36,10 +34,12 @@ where
 	type Item = I::Item;
 
 	fn next(&mut self) -> Option<<Self as Iterator>::Item> {
-		self.iter.next().map(|item| {
-			self.artifact = Some((self.pred)(&item));
-			item
-		})
+		let item = self.iter.next();
+		self.artifact = match &item {
+			Some(item) => Some((self.pred)(item)),
+			None => None,
+		};
+		item
 	}
 }
 
@@ -58,12 +58,6 @@ where
 	}
 }
 
-pub type EnumerateArtifact<I> = Artifact<
-	Enumerate<I>,
-	fn(&<Enumerate<I> as Iterator>::Item) -> usize,
-	usize,
->;
-
 pub trait ArtifactExt : Iterator {
 	fn artifact<P, A>(self, pred: P) -> Artifact<Self, P, A>
 	where
@@ -72,13 +66,6 @@ pub trait ArtifactExt : Iterator {
 		A: Sized,
 	{
 		Artifact::new(self, pred)
-	}
-
-	fn enumerate_artifact(self) -> EnumerateArtifact<Self>
-	where
-		Self: Sized
-	{
-		self.enumerate().artifact(|(i, _)| *i)
 	}
 }
 
