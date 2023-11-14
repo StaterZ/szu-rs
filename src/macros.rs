@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 #[macro_export]
 macro_rules! replace_macro_arg {
 	($in:tt, $( $out:tt )* ) => {
@@ -69,3 +71,13 @@ macro_rules! set_chain {
 		}
 	}
 }
+
+#[macro_export]
+macro_rules! unwrap_or_return (
+	($val:expr $(, $ret_val:expr)?) => {
+		match $val {
+			Some(val) => val,
+			None => return $($ret_val)?,
+		}
+	};
+);
