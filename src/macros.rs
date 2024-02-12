@@ -1,5 +1,10 @@
 #![allow(dead_code)]
 
+#[derive(Debug)]
+pub enum EnumTagConversionError {
+	VariantHasValue,
+}
+
 #[macro_export]
 macro_rules! replace_macro_arg {
 	($in:tt, $( $out:tt )* ) => {
@@ -8,12 +13,12 @@ macro_rules! replace_macro_arg {
 }
 
 #[macro_export]
-macro_rules! tag_enum_helper {
+macro_rules! tag_enum_variant_converter {
 	($value_name:ident :: $n:ident ( $( $p:ty ),* ) ) => {
-		panic!("bad tag conversion")
+		Err($crate::macros::EnumTagConversionError::VariantHasValue)
 	};
 	($value_name:ident :: $n:ident) => {
-		$value_name :: $n
+		Ok($value_name :: $n)
 	};
 }
 
@@ -37,18 +42,20 @@ macro_rules! tag_enum {
 			$( $n ),+
 		}
 
-		impl From<$value_name> for $tag_name {
-			fn from(value: $value_name) -> Self {
+		impl From<&$value_name> for $tag_name {
+			fn from(value: &$value_name) -> Self {
 				match value {
-					$( $value_name :: $n $( ( $( replace_macro_arg!($p, _) ),* ) )? => $tag_name :: $n ),+
+					$( $value_name :: $n $( ( $( $crate::replace_macro_arg!($p, _) ),* ) )? => $tag_name :: $n ),+
 				}
 			}
 		}
 		
-		impl From<$tag_name> for $value_name {
-			fn from(value: $tag_name) -> Self {
+		impl TryFrom<$tag_name> for $value_name {
+			type Error = $crate::macros::EnumTagConversionError;
+
+			fn try_from(value: $tag_name) -> Result<Self, Self::Error> {
 				match value {
-					$( $tag_name :: $n => tag_enum_helper!($value_name :: $n $( ( $( $p ),* ) )?) ),+
+					$( $tag_name :: $n => $crate::tag_enum_variant_converter!($value_name :: $n $( ( $( $p ),* ) )?) ),+
 				}
 			}
 		}
@@ -81,3 +88,14 @@ macro_rules! unwrap_or_return (
 		}
 	};
 );
+
+//using this instead of a const func cuz they too unstable with trait bounds
+#[macro_export]
+macro_rules! ceil_div {
+	($lhs:expr, $rhs:expr) => {
+		{
+			let (lhs, rhs) = ($lhs, $rhs);
+			(lhs + (rhs - 1)) / rhs
+		}
+	};
+}
