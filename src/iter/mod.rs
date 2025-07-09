@@ -1,13 +1,25 @@
 pub use artifact::{Artifact, ArtifactExt};
 pub use consumed::{Consumed, ConsumedExt};
 pub use window_option::{WindowOption, WindowOptionExt};
-pub use dynamic_zip::{DynamicZip, DynamicZipExt};
+pub use multi_zip::{MultiZip, MultiZipExt};
+pub use multi_zip_array::{MultiZipArray, MultiZipArrayExt};
 pub use padded_array_chunks::{PaddedArrayChunks, PaddedArrayChunksExt};
 pub use bit_packer::{BitPacker, BitPackerExt};
+pub use rle::{Rle, RleExt};
+pub use find_last_map_ext::FindLastMapExt;
+pub use bins_ext::BinsExt;
+pub use multi_zip_array2_ext::MultiZipArray2Ext;
+pub use split_by_bytes::SplitByBytes;
 
 mod artifact;
 mod consumed;
 mod window_option;
-mod dynamic_zip;
+mod multi_zip;
+mod multi_zip_array;
 mod padded_array_chunks;
 mod bit_packer;
+mod rle;
+mod find_last_map_ext;
+mod bins_ext;
+mod multi_zip_array2_ext;
+mod split_by_bytes;

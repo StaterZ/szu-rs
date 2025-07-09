@@ -1,7 +1,8 @@
 use super::PaddedArrayChunks;
 
 pub trait PaddedArrayChunksExt : Iterator {
-	fn padded_array_chunks<const N: usize, F>(self, filler: F) -> PaddedArrayChunks<Self, N, F> where
+	fn padded_array_chunks<const N: usize, F>(self, filler: F) -> PaddedArrayChunks<Self, N, F>
+	where
 		Self: Sized,
 		F: Fn() -> Self::Item,
 	{

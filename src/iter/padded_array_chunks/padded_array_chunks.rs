@@ -19,19 +19,18 @@ impl<I: Iterator, const N: usize, F: Fn() -> I::Item> Iterator for PaddedArrayCh
 
 	fn next(&mut self) -> Option<Self::Item> {
 		self.iter
-			.as_mut()
-			.map(|iter| iter.next())
-			.and_then(|item| item.or_else(|| self.iter
+			.as_mut()?
+			.next()
+			.or_else(|| self.iter
 				.take()
 				.unwrap() //we know it's safe since we're inside the 'iter.as_mut().map'. thi9s means we only run if iter is the 'Some' variant
 				.into_remainder()
 				.map(|rem| {
-					let rem_iter = &mut rem.fuse();
-					let chunk: Self::Item = array::from_fn(|_| rem_iter
+					let mut rem = rem.into_iter();
+					let chunk: Self::Item = array::from_fn(|_| rem
 						.next()
 						.unwrap_or_else(|| (self.filler)()));
 					chunk
-				})
-			))
+				}))
 	}
 }

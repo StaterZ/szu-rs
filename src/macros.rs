@@ -63,6 +63,16 @@ macro_rules! tag_enum {
 }
 
 #[macro_export]
+macro_rules! extract_variant {
+	($e:expr, $p:pat => $result:expr) => {
+		match $e {
+			$p => Some($result),
+			_ => None,
+		}
+	};
+}
+
+#[macro_export]
 macro_rules! ternary {
 	($cond:expr => $trueExpr:expr, $falseExpr:expr) => {
 		if $cond { $trueExpr } else { $falseExpr }
@@ -91,11 +101,29 @@ macro_rules! unwrap_or_return (
 
 //using this instead of a const func cuz they too unstable with trait bounds
 #[macro_export]
-macro_rules! ceil_div {
+macro_rules! int_div_round {
+	($lhs:expr, $rhs:expr) => {
+		{
+			let (lhs, rhs) = ($lhs, $rhs);
+			(lhs + (rhs / 2)) / rhs
+		}
+	}
+}
+
+#[macro_export]
+macro_rules! int_div_ceil {
 	($lhs:expr, $rhs:expr) => {
 		{
 			let (lhs, rhs) = ($lhs, $rhs);
 			(lhs + (rhs - 1)) / rhs
 		}
+	};
+}
+
+#[macro_export]
+macro_rules! flush_print {
+	($($all:tt)*) => {
+		print!($($all)*);
+		_ = std::io::stdout().flush();
 	};
 }
