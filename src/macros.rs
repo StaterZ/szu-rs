@@ -73,13 +73,6 @@ macro_rules! extract_variant {
 }
 
 #[macro_export]
-macro_rules! ternary {
-	($cond:expr => $trueExpr:expr, $falseExpr:expr) => {
-		if $cond { $trueExpr } else { $falseExpr }
-	}
-}
-
-#[macro_export]
 macro_rules! set_chain {
 	($lhs:expr, $rhs:expr) => {
 		{
