@@ -82,16 +82,6 @@ macro_rules! set_chain {
 	}
 }
 
-#[macro_export]
-macro_rules! unwrap_or_return (
-	($val:expr $(, $ret_val:expr)?) => {
-		match $val {
-			Some(val) => val,
-			None => return $($ret_val)?,
-		}
-	};
-);
-
 //using this instead of a const func cuz they too unstable with trait bounds
 #[macro_export]
 macro_rules! int_div_round {

@@ -1,3 +1,5 @@
+use std::iter::FusedIterator;
+
 pub struct MultiZipArray<I: Iterator, const N: usize> {
 	iters: [I; N]
 }
@@ -17,3 +19,5 @@ impl<I: Iterator, const N: usize> Iterator for MultiZipArray<I, N> {
 		std::array::try_from_fn(|i| self.iters[i].next())
 	}
 }
+
+impl<I: FusedIterator, const N: usize> FusedIterator for MultiZipArray<I, N> {}

@@ -6,3 +6,4 @@ pub mod iter;
 pub mod macros;
 pub mod math;
 pub mod opt_own;
+pub mod mappable;

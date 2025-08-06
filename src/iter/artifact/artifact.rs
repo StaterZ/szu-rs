@@ -1,3 +1,5 @@
+use std::iter::FusedIterator;
+
 pub struct Artifact<I, P, A>
 where
 	I: Iterator,
@@ -57,3 +59,9 @@ where
 		}
 	}
 }
+impl<I, P, A> FusedIterator for Artifact<I, P, A>
+where
+	I: Clone + FusedIterator,
+	P: Clone + Fn(&I::Item) -> A,
+	A: Clone,
+{}

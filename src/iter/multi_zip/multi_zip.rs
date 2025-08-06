@@ -1,4 +1,4 @@
-use std::marker::PhantomData;
+use std::{iter::FusedIterator, marker::PhantomData};
 
 pub struct MultiZip<V, B>
 where
@@ -39,3 +39,9 @@ where
 			.collect()
 	}
 }
+
+impl<V, B> FusedIterator for MultiZip<V, B>
+where
+	V: IntoIterator<Item: FusedIterator> + AsRef<[V::Item]> + AsMut<[V::Item]>,
+	B: FromIterator<<V::Item as Iterator>::Item>,
+{}

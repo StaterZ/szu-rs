@@ -1,5 +1,6 @@
-use std::iter::Peekable;
+use std::iter::{FusedIterator, Peekable};
 
+///Performs run length encoding on the iterator, merging items if they're equal
 pub struct Rle<I: Iterator> {
 	iter: Peekable<I>,
 }
@@ -21,7 +22,7 @@ impl<I: Iterator<Item: Eq>> Iterator for Rle<I> {
 	fn next(&mut self) -> Option<Self::Item> {
 		let mut result = Self::Item {
 			pattern: self.iter.next()?,
-			len: 0
+			len: 0,
 		};
 		while self.iter.next_if_eq(&result.pattern).is_some() {
 			result.len += 1;
@@ -30,3 +31,5 @@ impl<I: Iterator<Item: Eq>> Iterator for Rle<I> {
 		Some(result)
 	}
 }
+
+impl<I: Iterator<Item: Eq> + FusedIterator> FusedIterator for Rle<I> {}

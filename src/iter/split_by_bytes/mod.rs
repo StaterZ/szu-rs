@@ -1,3 +1,5 @@
+use std::iter::FusedIterator;
+
 pub struct SplitByBytes<'a> {
 	input: &'a str,
 	max_bytes: usize,
@@ -39,3 +41,5 @@ impl<'a> Iterator for SplitByBytes<'a> {
 		Some(&self.input[begin..self.pos])
 	}
 }
+
+impl<'a> FusedIterator for SplitByBytes<'a> {}
