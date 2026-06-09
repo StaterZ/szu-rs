@@ -21,3 +21,31 @@ mod find_last_map_ext;
 mod bins_ext;
 mod multi_zip_array2_ext;
 mod split_by_bytes;
+
+pub trait IteratorExt: Iterator {
+	fn min_by_key_while<K, F>(self, mut f: F) -> Option<Self::Item>
+	where
+		Self: Sized,
+		K: Ord,
+		F: FnMut(&Self::Item) -> Option<K>,
+	{
+		let mut min_item: Option<Self::Item> = None;
+		let mut min_key: Option<K> = None;
+
+		for item in self {
+			let key = match f(&item) {
+				Some(k) => k,
+				None => return None,
+			};
+
+			if min_key.as_ref().map_or(true, |mk| key < *mk) {
+				min_key = Some(key);
+				min_item = Some(item);
+			}
+		}
+
+		min_item
+	}
+}
+
+impl<I: Iterator> IteratorExt for I {}

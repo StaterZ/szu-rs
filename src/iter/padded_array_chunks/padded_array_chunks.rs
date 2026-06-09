@@ -1,4 +1,4 @@
-use std::{array, iter::{ArrayChunks, FusedIterator}};
+use std::{iter::{ArrayChunks, FusedIterator}, mem::MaybeUninit};
 
 ///Functions identically to ArrayChunks, but instead of providing the remainder as a slice, this pads it out and returns it as the last item
 pub struct PaddedArrayChunks<I: Iterator, const N: usize, F: Fn() -> I::Item> {
@@ -23,17 +23,25 @@ impl<I: Iterator, const N: usize, F: Fn() -> I::Item> Iterator for PaddedArrayCh
 		self.iter
 			.as_mut()?
 			.next()
-			.or_else(|| self.iter
-				.take()
-				.unwrap() //we know it's safe since we're inside the 'iter.as_mut().map'. this means we only run if iter is the 'Some' variant
-				.into_remainder()
-				.map(|rem| {
-					let mut rem = rem.into_iter();
-					let chunk: Self::Item = array::from_fn(|_| rem
-						.next()
-						.unwrap_or_else(&self.filler));
-					chunk
-				}))
+			.or_else(|| {
+				let mut rem = self.iter
+					.take()
+					.unwrap() //we know it's safe since we're inside the 'iter.as_mut().map'. this means we only run if iter is the 'Some' variant
+					.into_remainder();
+
+				let mut chunk = [const { MaybeUninit::uninit() }; _];
+
+				let mut i = 0;
+				while let Some(v) = rem.next() {
+					chunk[i].write(v);
+					i += 1;
+				}
+				while i < chunk.len() {
+					chunk[i].write((self.filler)());
+					i += 1;
+				}
+				Some(unsafe { MaybeUninit::assume_init(chunk.transpose()) }) //SAFETY: All elements were written
+			})
 	}
 }
 
