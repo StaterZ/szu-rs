@@ -1,14 +1,15 @@
-pub use artifact::{Artifact, ArtifactExt};
-pub use window_option::{WindowOption, WindowOptionExt};
-pub use multi_zip::{MultiZip, MultiZipExt};
-pub use multi_zip_array::{MultiZipArray, MultiZipArrayExt};
-pub use padded_array_chunks::{PaddedArrayChunks, PaddedArrayChunksExt};
-pub use bit_packer::{BitPacker, BitPackerExt};
-pub use rle::{Rle, RleExt};
-pub use find_last_map_ext::FindLastMapExt;
-pub use bins_ext::BinsExt;
-pub use multi_zip_array2_ext::MultiZipArray2Ext;
-pub use split_by_bytes::SplitByBytes;
+pub use artifact::*;
+pub use window_option::*;
+pub use multi_zip::*;
+pub use multi_zip_array::*;
+pub use padded_array_chunks::*;
+pub use bit_packer::*;
+pub use rle::*;
+pub use find_last_map_ext::*;
+pub use bins_ext::*;
+pub use multi_zip_array2_ext::*;
+pub use split_by_bytes::*;
+pub use peekable_iter::*;
 
 mod artifact;
 mod window_option;
@@ -21,6 +22,7 @@ mod find_last_map_ext;
 mod bins_ext;
 mod multi_zip_array2_ext;
 mod split_by_bytes;
+mod peekable_iter;
 
 pub trait IteratorExt: Iterator {
 	fn min_by_key_while<K, F>(self, mut f: F) -> Option<Self::Item>

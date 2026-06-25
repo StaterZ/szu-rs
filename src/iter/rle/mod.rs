@@ -1,4 +1,4 @@
-pub use rle::Rle;
+pub use rle::{Rle, RleRun};
 pub use rle_ext::RleExt;
 
 mod rle;
