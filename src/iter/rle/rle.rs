@@ -106,7 +106,6 @@ impl<I: PeekableIterator<Item: Clone + Eq>, N: Unsigned + Bounded + Copy + Into<
 	fn next(&mut self) -> Option<Self::Item> {
 		let pattern = self.iter.next()?;
 		let len = 1 + self.iter
-			.by_ref()
 			.peeking_take_while(|c| *c == pattern)
 			.take(N::max_value().into())
 			.count();
