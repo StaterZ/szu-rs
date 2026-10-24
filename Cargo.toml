@@ -1,6 +1,6 @@
 [package]
 name = "szu"
-version = "0.2.2"
+version = "0.2.3"
 authors = ["StaterZ"]
 edition = "2024"
 
