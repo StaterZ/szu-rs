@@ -15,20 +15,7 @@ pub trait GoodNum:
 { }
 //impl<T: Integer + Copy + NumCast + NumAssignOps> GoodNum for T { }
 //impl<T: Float + Copy + NumCast + NumAssignOps> GoodNum for T { }
-impl GoodNum for i8    { }
-impl GoodNum for i16   { }
-impl GoodNum for i32   { }
-impl GoodNum for i64   { }
-impl GoodNum for i128  { }
-impl GoodNum for isize { }
-impl GoodNum for u8    { }
-impl GoodNum for u16   { }
-impl GoodNum for u32   { }
-impl GoodNum for u64   { }
-impl GoodNum for u128  { }
-impl GoodNum for usize { }
-impl GoodNum for f32   { }
-impl GoodNum for f64   { }
+impl<T: Copy + Num + ConstZero + ConstOne + NumCast + PartialOrd + NumAssignOps> GoodNum for T { }
 
 pub trait GoodInt: GoodNum + PrimInt + Integer { }
 impl<T: GoodNum + PrimInt + Integer> GoodInt for T { }
