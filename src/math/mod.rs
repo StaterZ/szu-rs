@@ -30,14 +30,8 @@ impl GoodNum for usize { }
 impl GoodNum for f32   { }
 impl GoodNum for f64   { }
 
-pub trait GoodInt: GoodNum + PrimInt {
-	fn gcd(x: Self, y: Self) -> Self;
-}
-impl<T: Integer + GoodNum + PrimInt> GoodInt for T {
-	fn gcd(x: Self, y: Self) -> Self {
-		num::integer::gcd(x, y)
-	}
-}
+pub trait GoodInt: GoodNum + PrimInt + Integer { }
+impl<T: GoodNum + PrimInt + Integer> GoodInt for T { }
 
 pub trait GoodFloat: GoodNum + Float { }
 impl<T: GoodNum + Float> GoodFloat for T { }
